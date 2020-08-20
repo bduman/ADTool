@@ -1,0 +1,28 @@
+name: Develop Build Pipeline
+    
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/ADTool/
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install dependencies
+      run:  dotnet restore
+    - name: Build
+      run:  dotnet build --configuration Release --no-restore
+    - name: Test
+      run: |
+        cd ../../tests/ADTool.Tests/
+        dotnet test --verbosity normal
